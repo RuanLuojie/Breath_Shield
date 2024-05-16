@@ -1,0 +1,28 @@
+﻿{
+  "iisSettings": {
+    "windowsAuthentication": false, // 停用 Windows 認證
+    "anonymousAuthentication": true, // 啟用匿名認證
+    "iisExpress": {
+      "applicationUrl": "http://localhost:48909", // IIS Express 應用程式的 URL
+      "sslPort": 44346 // IIS Express 的 SSL 埠
+    }
+  },
+  "profiles": {
+    "MyRaspberryPiCarApi": {
+      "commandName": "Project", // 執行專案的指令
+      "dotnetRunMessages": true, // 顯示 .NET 執行訊息
+      "launchBrowser": true, // 自動啟動瀏覽器
+      "applicationUrl": "http://localhost:7024;http://localhost:5240", // 應用程式的 URL
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development" // 將 ASP.NET Core 環境設置為開發模式
+      }
+    },
+    "IIS Express": {
+      "commandName": "IISExpress", // 執行 IIS Express 的指令
+      "launchBrowser": true, // 自動啟動瀏覽器
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development" // 將 ASP.NET Core 環境設置為開發模式
+      }
+    }
+  }
+}
