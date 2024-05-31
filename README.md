@@ -102,5 +102,5 @@
 ---
 ## 支援
 
-如果遇到任何問題，請聯絡 [Roger] (hiaconde@gmail.com)。
-詳細資料 (https://hackmd.io/@NnknBWhxTNGvs1jO3I8-bQ/ByOtKFP4A)
+- 如果遇到任何問題，請聯絡 [Roger] (hiaconde@gmail.com)。
+- 詳細資料 (https://hackmd.io/@NnknBWhxTNGvs1jO3I8-bQ/ByOtKFP4A)
