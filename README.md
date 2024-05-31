@@ -100,3 +100,7 @@
 通過上述步驟，你可以成功設置和運行基於Flask和ASP.NET的實時視頻流AI預測系統。如有任何疑問或需要進一步的幫助，請參考相關文檔或聯繫項目維護者。
 
 ---
+## 支援
+
+如果遇到任何問題，請聯絡 [Roger] (hiaconde@gmail.com)。
+詳細資料 (https://hackmd.io/@NnknBWhxTNGvs1jO3I8-bQ/ByOtKFP4A)
