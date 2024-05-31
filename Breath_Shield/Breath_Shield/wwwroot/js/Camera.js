@@ -1,16 +1,44 @@
+let raspberryPiIp = '';
+let serverIp = '';
+
+function updateIps() {
+    raspberryPiIp = document.getElementById('raspberryPiIp').value;
+    serverIp = document.getElementById('serverIp').value;
+
+    document.getElementById('cameraImage').src = `http://${raspberryPiIp}:5000/video_feed`;
+
+    // 設置樹莓派IP地址到Flask服務器通過ASP.NET
+    fetch('/api/camera/set_raspberry_pi_ip', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ RaspberryPiIp: raspberryPiIp, FlaskIp: serverIp })
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'success') {
+                console.log('Camera IP set successfully');
+            } else {
+                console.error('Failed to set camera IP:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error setting camera IP:', error);
+        });
+
+    fetchPredictions();
+}
+
 async function fetchPredictions() {
     try {
-        const response = await fetch('/api/camera/predictions');
+        const response = await fetch(`/api/camera/predictions?ip=${serverIp}`);
         if (!response.ok) {
             throw new Error(`HTTP error! status: ${response.status}`);
         }
         const data = await response.json();
         const videoBox = document.getElementById('Camerabox');
         const predictionElement = document.getElementById('predictionBox');
-        const testDiv = document.getElementById('test');
-
-        // 更新預測文字
-        
 
         // 根據預測結果更改邊框顏色
         if (data.class_name === '0 Mask') {
@@ -21,13 +49,16 @@ async function fetchPredictions() {
             videoBox.className = 'Video';
         }
 
-        // 當信心分數小於90%時更新test區域
+        // 更新預測文字
         if (parseFloat(data.confidence_score.replace('%', '')) > 90) {
             predictionElement.innerHTML = `<p>Prediction: ${data.class_name} - Confidence: ${data.confidence_score}</p>`;
-        } 
+        } else {
+            predictionElement.innerHTML = `<p>Prediction: Low Confidence</p>`;
+        }
     } catch (error) {
         console.log('Failed to fetch predictions:', error);
-        testDiv.innerHTML = '<p>Error fetching predictions.</p>';
+        const predictionElement = document.getElementById('predictionBox');
+        predictionElement.innerHTML = '<p>Error fetching predictions.</p>';
     }
 }
 

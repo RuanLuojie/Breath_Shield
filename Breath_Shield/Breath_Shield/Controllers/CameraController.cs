@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
-using System.Threading.Tasks;
 using System.Text.Json;
+using System.Threading.Tasks;
 
 namespace Breath_Shield.Controllers
 {
@@ -16,35 +16,38 @@ namespace Breath_Shield.Controllers
             _httpClient = httpClient;
         }
 
-        [HttpGet("video_feed")]
-        public async Task<IActionResult> GetVideoStream()
+        [HttpPost("set_raspberry_pi_ip")]
+        public async Task<IActionResult> SetRaspberryPiIp([FromBody] IpAddressModel model)
         {
-            var streamUrl = "http://192.168.0.14:8080/video";
-            var response = await _httpClient.GetAsync(streamUrl, HttpCompletionOption.ResponseHeadersRead);
+            var flaskUrl = $"http://{model.FlaskIp}:8080/set_camera_ip";
+            var content = new StringContent(JsonSerializer.Serialize(new { camera_ip = model.RaspberryPiIp }), System.Text.Encoding.UTF8, "application/json");
+            var response = await _httpClient.PostAsync(flaskUrl, content);
+
             if (response.IsSuccessStatusCode)
             {
-                var stream = await response.Content.ReadAsStreamAsync();
-                return new FileStreamResult(stream, "multipart/x-mixed-replace; boundary=frame");
+                return Ok(new { status = "success" });
             }
-            return BadRequest("Unable to connect to the video stream.");
+            return BadRequest(new { status = "failure", message = "Unable to set Raspberry Pi IP" });
         }
 
-        // New endpoint to get prediction data
         [HttpGet("predictions")]
-        public async Task<IActionResult> GetPredictions()
+        public async Task<IActionResult> GetPredictions([FromQuery] string ip)
         {
-            var predictionUrl = "http://192.168.0.14:8080/predict";
+            var predictionUrl = $"http://{ip}:8080/predict";
             var response = await _httpClient.GetAsync(predictionUrl);
             if (response.IsSuccessStatusCode)
             {
-                // Deserialize JSON from the response
                 var jsonContent = await response.Content.ReadAsStringAsync();
                 var predictionData = JsonSerializer.Deserialize<object>(jsonContent);
-
-                // Return the JSON data as is from the Flask server
                 return Ok(predictionData);
             }
             return BadRequest("Unable to retrieve predictions.");
         }
+    }
+
+    public class IpAddressModel
+    {
+        public string RaspberryPiIp { get; set; }
+        public string FlaskIp { get; set; }
     }
 }

@@ -8,23 +8,23 @@
     "net6.0": []
   },
   "packageFolders": {
-    "C:\\Users\\User\\.nuget\\packages\\": {},
+    "C:\\Users\\hiaco\\.nuget\\packages\\": {},
     "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\User\\OneDrive - 中國科技大學\\桌面\\Program\\Breath_Shield\\Breath_Shield\\Breath_Shield\\Breath_Shield.csproj",
+      "projectUniqueName": "D:\\Git-Report\\Breath_Shield\\Breath_Shield\\Breath_Shield\\Breath_Shield.csproj",
       "projectName": "Breath_Shield",
-      "projectPath": "C:\\Users\\User\\OneDrive - 中國科技大學\\桌面\\Program\\Breath_Shield\\Breath_Shield\\Breath_Shield\\Breath_Shield.csproj",
-      "packagesPath": "C:\\Users\\User\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\User\\OneDrive - 中國科技大學\\桌面\\Program\\Breath_Shield\\Breath_Shield\\Breath_Shield\\obj\\",
+      "projectPath": "D:\\Git-Report\\Breath_Shield\\Breath_Shield\\Breath_Shield\\Breath_Shield.csproj",
+      "packagesPath": "C:\\Users\\hiaco\\.nuget\\packages\\",
+      "outputPath": "D:\\Git-Report\\Breath_Shield\\Breath_Shield\\Breath_Shield\\obj\\",
       "projectStyle": "PackageReference",
       "fallbackFolders": [
         "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
       ],
       "configFilePaths": [
-        "C:\\Users\\User\\AppData\\Roaming\\NuGet\\NuGet.Config",
+        "C:\\Users\\hiaco\\AppData\\Roaming\\NuGet\\NuGet.Config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
         "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
       ],
@@ -46,11 +46,6 @@
         "warnAsError": [
           "NU1605"
         ]
-      },
-      "restoreAuditProperties": {
-        "enableAudit": "true",
-        "auditLevel": "low",
-        "auditMode": "direct"
       }
     },
     "frameworks": {
@@ -75,7 +70,7 @@
             "privateAssets": "all"
           }
         },
-        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.202\\RuntimeIdentifierGraph.json"
+        "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101\\RuntimeIdentifierGraph.json"
       }
     }
   }

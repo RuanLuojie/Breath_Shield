@@ -3,15 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <title>Breath_Shield</title>
     <link rel="stylesheet" href="css/Camera.css">
 </head>
 <body>
-    <h1>Breath_Shield</h1>    
-    <div id="Camerabox" class="Video"><img src='http://192.168.0.111:8080/?action=stream' class="Camera"></div>
-    <div id="predictionBox" class="test"><p>Waiting for predictions...</p></div>
+    <h1>Breath_Shield</h1>
+    <div>
+        <label for="raspberryPiIp">Raspberry Pi IP:</label>
+        <input type="text" id="raspberryPiIp" placeholder="Enter Raspberry Pi IP">
+    </div>
+    <div>
+        <label for="serverIp">Server IP:</label>
+        <input type="text" id="serverIp" placeholder="Enter Server IP">
+    </div>
+    <button onclick="updateIps()">Update IPs</button>
 
-    <!-- Include the script.js file -->
+    <div id="Camerabox" class="Video"><img id="cameraImage" class="Camera"></div>
+    <div id="predictionBox" class="test"><p>Waiting for predictions...</p></div>
     <script src="js/Camera.js"></script>
 </body>
 </html>

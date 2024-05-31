@@ -47,6 +47,8 @@ venv/
 ENV/
 ENV.*/
 .vscode/
+.vs/
+
 
 # Python specific files
 __pycache__/
@@ -149,3 +151,7 @@ Icon
 # Files that might appear on external disk drives
 .Spotlight-V100
 .Trashes
+
+
+* text=auto
+labels.txt text eol=lf

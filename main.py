@@ -1,61 +1,81 @@
-from flask import Flask, Response, jsonify
+from flask import Flask, jsonify, request
 import cv2
 import numpy as np
 from keras.models import load_model
 
 app = Flask(__name__)
 
-# Disable scientific notation for clarity
+# 禁用科学计数法
 np.set_printoptions(suppress=True)
 
-# Load the model and labels
-model = load_model(r"keras_model.h5", compile=False)
-class_names = [name.strip() for name in open(r"labels.txt", "r").readlines()]
+# 加载模型和标签
+model = load_model("keras_Model.h5", compile=False)
+class_names = [name.strip() for name in open("labels.txt", "r").readlines()]
 
-# Initialize the video camera
-camera = cv2.VideoCapture(0)
+# 初始化摄像头变量
+camera_ip = None
+camera = None
 
-def get_prediction(frame):
-    # Process and predict
-    processed_frame = cv2.resize(frame, (224, 224), interpolation=cv2.INTER_AREA)
-    processed_frame = np.asarray(processed_frame, dtype=np.float32).reshape(1, 224, 224, 3)
-    processed_frame = (processed_frame / 127.5) - 1
-    prediction = model.predict(processed_frame)
+def initialize_camera(ip):
+    global camera
+    if camera:
+        camera.release()
+    camera = cv2.VideoCapture(f'http://{ip}:5000/video_feed')
+    if not camera.isOpened():
+        camera = None
+        return False
+    return True
+
+def get_prediction():
+    global camera
+    if camera is None:
+        return None
+
+    # 从摄像头抓取影像
+    ret, image = camera.read()
+    if not ret:
+        return None
+
+    # 调整影像大小
+    image = cv2.resize(image, (224, 224), interpolation=cv2.INTER_AREA)
+
+    # 将影像转为numpy数组并调整为模型输入的形状
+    image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
+
+    # 标准化影像数组
+    image = (image / 127.5) - 1
+
+    # 预测模型
+    prediction = model.predict(image)
     index = np.argmax(prediction)
     class_name = class_names[index]
-    confidence_score = np.round(prediction[0][index] * 100, 2)
+    confidence_score = prediction[0][index]
 
     return {
-        "class_name": class_name,
-        "confidence_score": f"{confidence_score}%"
+        "class_name": class_name.strip(),
+        "confidence_score": f"{np.round(confidence_score * 100, 2)}%"
     }
 
-def generate_frames():
-    while True:
-        success, frame = camera.read()
-        if not success:
-            break
-        # Get predictions for the current frame
-        prediction = get_prediction(frame)
-        # You can modify how you use the prediction here, e.g., display it on the frame
-        cv2.putText(frame, f"{prediction['class_name']}: {prediction['confidence_score']}", (10, 30),
-                    cv2.FONT_HERSHEY_SIMPLEX, 0.6, (0, 255, 0), 2)
+@app.route('/set_camera_ip', methods=['POST'])
+def set_camera_ip():
+    global camera_ip
+    data = request.json
+    camera_ip = data.get('camera_ip')
+    if camera_ip and initialize_camera(camera_ip):
+        return jsonify({"status": "success", "camera_ip": camera_ip})
+    else:
+        return jsonify({"status": "failure", "message": "No IP address provided or could not initialize camera"}), 400
 
-        ret, buffer = cv2.imencode('.jpg', frame)
-        frame = buffer.tobytes()
-        yield (b'--frame\r\n'
-               b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
-
-@app.route('/video')
-def video_feed():
-    return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
-
-@app.route('/predict')
+@app.route('/predict', methods=['GET'])
 def predict():
-    # This endpoint might be redundant now, as predictions are made in real-time and displayed on the video
-    frame = camera.read()[1]
-    result = get_prediction(frame)
-    return jsonify(result)
+    if camera is None:
+        return jsonify({"error": "Camera not initialized"}), 400
+    
+    result = get_prediction()
+    if result:
+        return jsonify(result)
+    else:
+        return jsonify({"error": "Could not read from camera"}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True, port=8080, host='0.0.0.0')
