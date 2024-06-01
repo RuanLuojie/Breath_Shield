@@ -40,21 +40,26 @@ async function fetchPredictions() {
         const videoBox = document.getElementById('Camerabox');
         const predictionElement = document.getElementById('predictionBox');
 
-        // 根據預測結果更改邊框顏色
-        if (data.class_name === '0 Mask') {
+        // 更新預測文字和邊框顏色
+        const confidenceScore = parseFloat(data.confidence_score.replace('%', ''));
+        if (confidenceScore < 70) {
+            data.class_name = 'NoMask';
+        }
+
+        if (data.class_name === 'Mask') {
             videoBox.className = 'Video border-mask';
-        } else if (data.class_name === '0 NoMask') {
+        } else if (data.class_name === 'NoMask') {
             videoBox.className = 'Video border-nomask';
         } else {
             videoBox.className = 'Video';
         }
 
-        // 更新預測文字
-        if (parseFloat(data.confidence_score.replace('%', '')) > 90) {
+        if (confidenceScore > 20) {
             predictionElement.innerHTML = `<p>Prediction: ${data.class_name} - Confidence: ${data.confidence_score}</p>`;
-        } else {
-            predictionElement.innerHTML = `<p>Prediction: Low Confidence</p>`;
         }
+        //else {
+        //    predictionElement.innerHTML = `<p>Prediction: Low Confidence</p>`;
+        //}
     } catch (error) {
         console.log('Failed to fetch predictions:', error);
         const predictionElement = document.getElementById('predictionBox');
@@ -63,4 +68,4 @@ async function fetchPredictions() {
 }
 
 // 每2秒鐘獲取一次預測結果
-setInterval(fetchPredictions, 2000);
+setInterval(fetchPredictions, 1000);

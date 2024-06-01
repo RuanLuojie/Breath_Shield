@@ -1,18 +1,22 @@
 from flask import Flask, jsonify, request
 import cv2
 import numpy as np
-from keras.models import load_model
+import torch
+import os
 
 app = Flask(__name__)
 
-# 禁用科学计数法
-np.set_printoptions(suppress=True)
+# 確保這裡的路徑是你模型文件的絕對路徑
+model_path = r'best.pt'
 
-# 加载模型和标签
-model = load_model("keras_Model.h5", compile=False)
-class_names = [name.strip() for name in open("labels.txt", "r").readlines()]
+# 檢查模型文件是否存在
+if not os.path.exists(model_path):
+    raise Exception(f"Model file not found at {model_path}")
 
-# 初始化摄像头变量
+# 加載YOLOv5模型並強制重新加載
+model = torch.hub.load('ultralytics/yolov5', 'custom', path=model_path, force_reload=True)
+
+# 初始化攝像頭變量
 camera_ip = None
 camera = None
 
@@ -31,51 +35,61 @@ def get_prediction():
     if camera is None:
         return None
 
-    # 从摄像头抓取影像
-    ret, image = camera.read()
-    if not ret:
+    try:
+        # 從攝像頭抓取影像
+        ret, image = camera.read()
+        if not ret:
+            return None
+
+        # YOLOv5 推理
+        results = model(image)
+
+        # 解析結果
+        detected_classes = results.pandas().xyxy[0]['name'].values
+        detected_confidences = results.pandas().xyxy[0]['confidence'].values
+
+        if len(detected_classes) > 0:
+            class_name = detected_classes[0]
+            confidence_score = detected_confidences[0]
+        else:
+            class_name = "No object detected"
+            confidence_score = 0.0
+
+        return {
+            "class_name": class_name,
+            "confidence_score": f"{np.round(confidence_score * 100, 2)}%"
+        }
+    except Exception as e:
+        # 捕獲任何異常並忽略
+        print(f"Error during prediction: {e}")
         return None
-
-    # 调整影像大小
-    image = cv2.resize(image, (224, 224), interpolation=cv2.INTER_AREA)
-
-    # 将影像转为numpy数组并调整为模型输入的形状
-    image = np.asarray(image, dtype=np.float32).reshape(1, 224, 224, 3)
-
-    # 标准化影像数组
-    image = (image / 127.5) - 1
-
-    # 预测模型
-    prediction = model.predict(image)
-    index = np.argmax(prediction)
-    class_name = class_names[index]
-    confidence_score = prediction[0][index]
-
-    return {
-        "class_name": class_name.strip(),
-        "confidence_score": f"{np.round(confidence_score * 100, 2)}%"
-    }
 
 @app.route('/set_camera_ip', methods=['POST'])
 def set_camera_ip():
     global camera_ip
-    data = request.json
-    camera_ip = data.get('camera_ip')
-    if camera_ip and initialize_camera(camera_ip):
-        return jsonify({"status": "success", "camera_ip": camera_ip})
-    else:
-        return jsonify({"status": "failure", "message": "No IP address provided or could not initialize camera"}), 400
+    try:
+        data = request.json
+        camera_ip = data.get('camera_ip')
+        if camera_ip and initialize_camera(camera_ip):
+            return jsonify({"status": "success", "camera_ip": camera_ip})
+        else:
+            raise Exception("No IP address provided or could not initialize camera")
+    except Exception as e:
+        return jsonify({"status": "failure", "message": str(e)}), 500
 
 @app.route('/predict', methods=['GET'])
 def predict():
-    if camera is None:
-        return jsonify({"error": "Camera not initialized"}), 400
-    
-    result = get_prediction()
-    if result:
-        return jsonify(result)
-    else:
-        return jsonify({"error": "Could not read from camera"}), 500
+    try:
+        if camera is None:
+            raise Exception("Camera not initialized")
+
+        result = get_prediction()
+        if result:
+            return jsonify(result)
+        else:
+            raise Exception("Could not read from camera")
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == '__main__':
     app.run(debug=True, threaded=True, port=8080, host='0.0.0.0')
