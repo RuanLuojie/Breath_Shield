@@ -1,40 +1,27 @@
-﻿{
+{
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-<<<<<<< HEAD
-      "applicationUrl": "http://0.0.0.0:48909", 
-      "sslPort": 44346 
-    }
-  },
-  "profiles": {
-    "MyRaspberryPiCarApi": {
-      "commandName": "Project", 
-      "dotnetRunMessages": true, 
-      "launchBrowser": true, 
-      "applicationUrl": "http://0.0.0.0:7024;http://0.0.0.0:5240", 
-=======
-      "applicationUrl": "http://0.0.0.0:48909", // IIS Express 應用程式的 URL
-      "sslPort": 44346 // IIS Express 的 SSL 埠
+      "applicationUrl": "http://0.0.0.0:48909",
+      "sslPort": 44346
     }
   },
   "profiles": {
     "Breath_Shield": {
-      "commandName": "Project", // 執行專案的指令
-      "dotnetRunMessages": true, // 顯示 .NET 執行訊息
-      "launchBrowser": true, // 自動啟動瀏覽器
-      "applicationUrl": "http://0.0.0.0:7024;http://0.0.0.0:5240", // 應用程式的 URL
->>>>>>> 403d45c (Initial commit)
+      "commandName": "Project",
+      "dotnetRunMessages": true,
+      "launchBrowser": true,
+      "applicationUrl": "http://0.0.0.0:7024;http://0.0.0.0:5240",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
     "IIS Express": {
-      "commandName": "IISExpress", 
-      "launchBrowser": true, 
+      "commandName": "IISExpress",
+      "launchBrowser": true,
       "environmentVariables": {
-        "ASPNETCORE_ENVIRONMENT": "Development" 
+        "ASPNETCORE_ENVIRONMENT": "Development"
       }
     }
   }
