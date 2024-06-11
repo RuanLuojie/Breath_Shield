@@ -5,7 +5,7 @@ function updateIps() {
     raspberryPiIp = document.getElementById('raspberryPiIp').value;
     serverIp = document.getElementById('serverIp').value;
 
-    document.getElementById('cameraImage').src = `http://${raspberryPiIp}:5000/video_feed`;
+    document.getElementById('cameraImage').src = `http://${raspberryPiIp}:8080/?action=stream`;
 
     // 設置樹莓派IP地址到Flask服務器通過ASP.NET
     fetch('/api/camera/set_raspberry_pi_ip', {
