@@ -24,7 +24,7 @@ def initialize_camera(ip):
     global camera
     if camera:
         camera.release()
-    camera = cv2.VideoCapture(f'http://{ip}:5000/video_feed')
+    camera = cv2.VideoCapture(f'http://{ip}:8080/?action=stream')
     if not camera.isOpened():
         camera = None
         return False
