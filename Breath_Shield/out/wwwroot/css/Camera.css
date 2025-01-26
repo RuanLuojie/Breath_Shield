@@ -1,0 +1,39 @@
+body{
+    /* overflow: hidden; */
+}
+h1{
+    margin-left: 40%;
+}
+.Video{
+    position: relative;
+    /* top: 20%; */
+    height: 50%;
+    width: 50%;
+    padding: 10px;
+    margin: auto;
+    border-radius: 10px;
+    border-style: solid;
+
+    border: 5px solid black;
+
+    /* background-color: aqua; */
+}
+.Video img {
+    object-fit: cover;
+    width: 100%;
+    height: 100%;
+}
+.test{
+    margin-left: 30%;
+}
+.test p{
+    font-family: Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif;
+    font-size: larger;
+}
+.border-mask {
+    border-color: green;
+}
+
+.border-nomask {
+    border-color: red;
+}
